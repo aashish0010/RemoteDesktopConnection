@@ -1,35 +1,15 @@
 ﻿#define debug
-using System;
-using System.Text.RegularExpressions;
 
 namespace RDP
 {
-    class Program
+    class Programv2
     {
         static void Main(string[] args)
         {
-
-            var info = new LogInfo();
-        #if debug
-            Console.WriteLine("please enter ipAddress");
-            while (true)
-            {
-                info.Ipaddress = Console.ReadLine();
-                if (new Regex(RdpConstant.IpaddressPatten).IsMatch(info.Ipaddress))
-                {
-                    break;
-                }
-            }
-            Console.WriteLine("please enter username");
-            info.Username = Console.ReadLine();
-            Console.WriteLine("please enter password");
-            info.Password = Console.ReadLine();
-         #else
-            info.Ipaddress = "120";
-            info.Username = "Adm";
-            info.Password = "wu";
-        #endif
-            RdpHandler.Rrocess(info);
+        }
+        public void Connect(LogInfo log)
+        {
+            RdpHandler.Rrocess(log);
         }
     }
 }
