@@ -1,0 +1,248 @@
+﻿@model IEnumerable<RemoteDesktopApplication.SiteManager>
+
+@{
+	ViewData["Title"] = "Site Manager";
+}
+
+<style>
+
+	body {
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 300;
+		line-height: 1.42em;
+		color: #A7A1AE;
+	}
+
+	.con th h1 {
+		font-weight: bold;
+		font-size: 1em;
+		text-align: center;
+		color: #185875;
+	}
+
+	.con td {
+		font-weight: normal;
+		font-size: 1em;
+		-webkit-box-shadow: 0 2px 2px -2px #0E1119;
+		-moz-box-shadow: 0 2px 2px -2px #0E1119;
+		box-shadow: 0 2px 2px -2px #0E1119;
+	}
+
+	.con {
+		text-align: left;
+		overflow: hidden;
+		width: 100%;
+		margin: 0 auto;
+		display: table;
+		padding: 0 0 8em 0;
+	}
+
+		.con td, .con th {
+			padding-bottom: 1%;
+			padding-top: 1%;
+			padding-left: 1%;
+			width: 2px
+		}
+
+		.con tr:nth-child(odd) {
+			background-color: #323C50;
+		}
+
+		.con tr:nth-child(even) {
+			background-color: #2C3446;
+		}
+
+		.con th {
+			background-color: #1F2739;
+		}
+
+		.con td:first-child {
+			color: #FB667A;
+		}
+
+</style>
+<body>
+
+
+	<div class="row mt-5">
+		<div class="col-1"></div>
+		<div class="col-3">
+			<button class="btn btn-success" data-toggle="modal" data-target="#modal-lg">Create</button>
+		</div>
+		<div class="col-4"></div>
+		<div class="form-group col-3 ml-3">
+			<input id="myInput" type="text" class="form-control" placeholder="Search..">
+		</div>
+		<div class="col-1"></div>
+	</div>
+
+	<table class="con">
+		<thead>
+			<tr>
+				<th>Site Name</th>
+				<th>Site Root</th>
+				<th>Type</th>
+				<th>Site Link</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody id="myTable">
+			@foreach (var items in Model)
+			{
+				<tr>
+					<td>@items.SiteName</td>
+					<td>@items.SiteRoot</td>
+					<td>@items.SiteType</td>
+					<td>@items.SiteLink</td>
+					<td>
+						<button type="button" class="btn btn-primary btn-sm" onclick="SiteConnect('@items.Id')">
+							<i class="fas fa-wifi"></i>
+							</button>
+						<button type="button" class="btn btn-info btn-sm" onclick="SiteDelete('@items.Id')">
+							<i class="fas fa-window-restore"></i>
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="SiteDelete('@items.Id')">
+							<i class="fas fa-trash-alt"></i>
+						</button>
+						
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<div class="modal fade" id="modal-lg" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Large Modal</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-4">
+							<div class="form-group">
+								<label for="exampleInputEmail1">Site Name</label>
+								<input type="text" class="form-control" id="siteName">
+							</div>
+						</div>
+						<div class="col-4">
+							<label for="exampleInputEmail1">Site Type</label>
+							<select id="siteType" class=" form-control select2 select2-hidden-accessible">
+								<option value="LIVE">LIVE</option>
+								<option value="UAT">UAT</option>
+							</select>
+
+						</div>
+
+						<div class="col-4">
+							<label for="exampleInputEmail1">Site Root</label>
+							<select id="siteRoot" class=" form-control select2 select2-hidden-accessible">
+								<option value="Admin">Admin</option>
+								<option value="Agent">Agent</option>
+							</select>
+
+						</div>
+
+						<div class="col-4">
+							<div class="form-group">
+								<label for="exampleInputEmail1">Site Link</label>
+								<input type="text" class="form-control" id="siteLink">
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="form-group">
+								<label for="exampleInputEmail1">UserName</label>
+								<input type="text" class="form-control" id="userName">
+							</div>
+						</div>
+
+						<div class="col-4">
+							<div class="form-group">
+								<label for="exampleInputEmail1">Pasword</label>
+								<input type="text" class="form-control" id="password">
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="form-group">
+								<label for="exampleInputEmail1">AccessCode</label>
+								<textarea class="form-control" id="accessCode"></textarea>
+							</div>
+						</div>
+
+						
+
+					</div>
+
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button id="SaveSite" type="button" class="btn btn-primary">Save</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
+
+</body>
+@section scripts {
+
+	<script>
+		$("#SaveSite").on("click", function () {
+			let jsondata = {
+				SiteName: $("#siteName").val(),
+				SiteLink: $("#siteLink").val(),
+				SiteRoot: $("#siteRoot").val(),
+				SiteType: $("#siteType").val(),
+				UserName: $("#userName").val(),
+				Password: $("#password").val(),
+				AccessCode: $("#accessCode").val()
+			};
+			console.log(JSON.stringify(jsondata))
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("AddSite","Home")',
+				data: jsondata,
+				success: function (result) {
+					location.reload();
+				}
+			})
+		})
+
+		function SiteConnect(guidid) {
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("Connect","Home")',
+				data: { id: guidid },
+				success: function (result) {
+					location.reload();
+				}
+			})
+		}
+
+		function SiteDelete(ipaddress) {
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("ClearSesssion","Home")',
+				data: { id: ipaddress },
+				success: function (result) {
+					location.reload();
+				}
+			})
+		}
+
+		$(document).ready(function () {
+			$("#myInput").on("keyup", function () {
+				var value = $(this).val().toLowerCase();
+				$("#myTable tr").filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		});
+	</script>
+}

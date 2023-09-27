@@ -1,6 +1,6 @@
 ﻿namespace RDP
 {
-    class LogInfo
+    public class LogInfo
     {
         public string Ipaddress { get; set; }
         public string Username { get; set; }

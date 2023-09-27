@@ -4,104 +4,124 @@
     ViewData["Title"] = "Home Page";
 }
 
-
 <style>
 
-body {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-  line-height: 1.42em;
-  color:#A7A1AE;
-}
+	body {
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 300;
+		line-height: 1.42em;
+		color: #A7A1AE;
+	}
 
-.container th h1 {
-	  font-weight: bold;
-	  font-size: 1em;
-  text-align: left;
-  color: #185875;
-}
+	.con th h1 {
+		font-weight: bold;
+		font-size: 1em;
+		text-align: left;
+		color: #185875;
+	}
 
-.container td {
-	  font-weight: normal;
-	  font-size: 1em;
-  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
-	   -moz-box-shadow: 0 2px 2px -2px #0E1119;
-	        box-shadow: 0 2px 2px -2px #0E1119;
-}
+	.con td {
+		font-weight: normal;
+		font-size: 1em;
+		-webkit-box-shadow: 0 2px 2px -2px #0E1119;
+		-moz-box-shadow: 0 2px 2px -2px #0E1119;
+		box-shadow: 0 2px 2px -2px #0E1119;
+	}
 
-.container {
-	  text-align: left;
-	  overflow: hidden;
-	  width: 80%;
-	  margin: 0 auto;
-  display: table;
-  padding: 0 0 8em 0;
-}
+	.con {
+		text-align: left;
+		overflow: hidden;
+		width: 98%;
+		margin: 0 auto;
+		display: table;
+		padding: 0 0 8em 0;
+	}
 
-.container td, .container th {
-	  padding-bottom: 2%;
-	  padding-top: 2%;
-  padding-left:2%;  
-}
+		.con td, .con th {
+			padding-bottom: 2%;
+			padding-top: 2%;
+			padding-left: 2%;
+			width: 10px
+		}
 
-/* Background-color of the odd rows */
-.container tr:nth-child(odd) {
-	  background-color: #323C50;
-}
+		/* Background-color of the odd rows */
+		.con tr:nth-child(odd) {
+			background-color: #323C50;
+		}
 
-/* Background-color of the even rows */
-.container tr:nth-child(even) {
-	  background-color: #2C3446;
-}
+		/* Background-color of the even rows */
+		.con tr:nth-child(even) {
+			background-color: #2C3446;
+		}
 
-.container th {
-	  background-color: #1F2739;
-}
+		.con th {
+			background-color: #1F2739;
+		}
 
-.container td:first-child { color: #FB667A; }
+		.con td:first-child {
+			color: #FB667A;
+		}
 
-.container tr:hover {
-   background-color: #464A52;
--webkit-box-shadow: 0 6px 6px -6px #0E1119;
-	   -moz-box-shadow: 0 6px 6px -6px #0E1119;
-	        box-shadow: 0 6px 6px -6px #0E1119;
-}
+		.con tr:hover {
+			background-color: #464A52;
+			-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+			-moz-box-shadow: 0 6px 6px -6px #0E1119;
+			box-shadow: 0 6px 6px -6px #0E1119;
+		}
 
-.container td:hover {
-  background-color: #FFF842;
-  color: #403E10;
-  font-weight: bold;
-  
-  box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
-  transform: translate3d(6px, -6px, 0);
-  
-  transition-delay: 0s;
-	  transition-duration: 0.4s;
-	  transition-property: all;
-  transition-timing-function: line;
-}
+		.con td:hover {
+			background-color: #FFF842;
+			color: #403E10;
+			font-weight: bold;
+			box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+			transform: translate3d(6px, -6px, 0);
+			transition-delay: 0s;
+			transition-duration: 0.4s;
+			transition-property: all;
+			transition-timing-function: line;
+		}
 </style>
 <body>
-	<button class="btn btn-danger" data-toggle="modal" data-target="#modal-lg">Create</button>
-		<table class="container">
+	
+	
+	<div class="row mt-5">
+		<div class="col-1"></div>
+		<div class="col-3">
+			<button class="btn btn-success" data-toggle="modal" data-target="#modal-lg">Create</button>
+		</div>
+		<div class="col-4"></div>
+		<div class="form-group col-3 ml-3">
+			<input id="myInput" type="text" class="form-control" placeholder="Search..">
+		</div>
+		<div class="col-1"></div>
+		<!-- insert another div here -->
+	</div>
+	
+		<table class="con">
 			<thead>
 				<tr>
 					<th>Server Name</th>
+					<th>Server Host</th>
 					<th>Server Type</th>
 					<th>IpAddress</th>
-					<th>Description</th>
 					<th>Action</th>
 				</tr>
 			</thead>
-			<tbody>
+		<tbody id="myTable">
 				@foreach (var items in Model)
 				{
 					<tr>
 						<td>@items.ServerName</td>
+						<td>@items.ServerHost</td>
 						<td>@items.ServerType</td>
 						<td>@items.ServerIpAddress</td>
-						<td>@items.ServerDescription</td>
-						<td><button type="button" class="btn btn-block btn-primary" onclick="ServerConnect(@items.Id)">Primary</button></td>
+					<td><button type="button" class="btn btn-primary btn-sm" onclick="ServerConnect('@items.Id')">
+							<i class="fas fa-wifi"></i>
+					</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="Delete('@items.Id')">
+							<i class="fas fa-trash-alt"></i>
+						</button>
+						</td>
 					</tr>
 				}
 			</tbody>
@@ -124,15 +144,25 @@ body {
 								<input type="text" class="form-control" id="serverName">
 							</div>
 						</div>
+						<div class="col-4">
+							<label for="exampleInputEmail1">Server Host</label>
+							<select id="serverHost" class=" form-control select2 select2-hidden-accessible">
+								<option value="LIVE">LIVE</option>
+								<option value="UAT">UAT</option>
+							</select>
+
+						</div>
 
 						<div class="col-4">
 								<label for="exampleInputEmail1">Server Type</label>
 							<select id="serverType" class=" form-control select2 select2-hidden-accessible">
+								<option value="Both">Both</option>
 									<option value="Database">Database</option>
 									<option value="File">File</option>
 								</select>
 								
 						</div>
+						
 						<div class="col-4">
 							<div class="form-group">
 								<label for="exampleInputEmail1">IpAddress</label>
@@ -158,6 +188,13 @@ body {
 								<textarea class="form-control" id="serverDescription"></textarea>
 							</div>
 						</div>
+
+						<div class="col-4">
+							<div class="form-group">
+								<label>IsAdserver</label>
+								<input type="checkbox" class="form-control" id="isadserver" />
+							</div>
+						</div>
 						
 					</div>
 					
@@ -175,25 +212,34 @@ body {
 
 
 </body>
+@section scripts {
 
 <script>
 
+
+
 	$("#SaveServer").on("click",function()
 	{
-		alert("her")
+			let isadserver = $("#isadserver").val();
+			if(isadserver == "on")
+			{
+				isadserver=true;
+			}
 		let jsondata = {
 			ServerName: $("#serverName").val(),
 			ServerType: $("#serverType").val(),
 			ServerIpAddress: $("#serverIpAddress").val(),
 			ServerUsername: $("#serverUsername").val(),
 			ServerPassword: $("#serverPassword").val(),
-			ServerDescription: $("#serverDescription").val()
+			ServerDescription: $("#serverDescription").val(),
+				IsAdServer: isadserver,
+				ServerHost: $("#serverHost").val()
 		};
 		console.log(JSON.stringify(jsondata))
 		$.ajax({
 			method: "POST",
-			url: @Url.Action("AddServer","Home"),
-			data: JSON.stringify(jsondata),
+			url: '@Url.Action("AddServer","Home")',
+			data: jsondata,
 			success: function (result) {
 				location.reload();
 			}
@@ -202,6 +248,34 @@ body {
 
 	function ServerConnect(ipaddress)
 	{
-		alert("ip")
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("ConnectRdc","Home")',
+				data:{id: ipaddress},
+				success: function (result) {
+					location.reload();
+				}
+			})
 	}
+
+		function Delete(ipaddress) {
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("DeleteRdc","Home")',
+				data: { id: ipaddress },
+				success: function (result) {
+					location.reload();
+				}
+			})
+		}
+
+		$(document).ready(function () {
+			$("#myInput").on("keyup", function () {
+				var value = $(this).val().toLowerCase();
+				$("#myTable tr").filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		});
 </script>
+}

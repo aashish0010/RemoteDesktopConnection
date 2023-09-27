@@ -6,6 +6,6 @@
 
         public static readonly string FilePath = "rdp.rdp";
 
-        public static readonly string templatePath="../../Handle/TemplateRDP.txt";
+        public static readonly string templatePath= "E:\\Personal\\RemoteDesktopConnection\\src\\encryption/TemplateRDP.txt";
     }
 }

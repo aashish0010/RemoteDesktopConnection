@@ -1,0 +1,76 @@
+﻿
+
+
+
+
+    <div class="col-12">
+        <div class="card card-primary card-outline card-tabs">
+            <div class="card-header p-0 pt-1 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#custom-tabs-three-home" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">JSON</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-three-profile-tab" data-toggle="pill" href="#custom-tabs-three-profile" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">XML</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="custom-tabs-three-tabContent">
+                    <div class="tab-pane fade active show" id="custom-tabs-three-home" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-5">
+                                <label>JSON</label>
+                                <textarea rows="18" id="needtobeautify" class="form-control"></textarea>
+                            </div>
+                            <div class="col-1"></div>
+
+                            <div class="col-5">
+                                <label>BEAUTIFY JSON</label>
+                                <textarea rows="18" id="beautifyjson" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-3" id="needtobeautifybutton">Beautify</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-5">
+                                <label>XML</label>
+                                <textarea rows="18" id="needtobeautify" class="form-control"></textarea>
+                            </div>
+                            <div class="col-1"></div>
+
+                            <div class="col-5">
+                                <label>BEAUTIFY XML</label>
+                                <textarea rows="18" id="beautifyjson" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-3" id="needtobeautifybutton">Beautify</button>
+                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+@section scripts {
+
+<script>
+        $("#needtobeautifybutton").on("click", function () {
+        let ugly = $("#needtobeautify").val();
+        var obj = JSON.parse(ugly);
+        var pretty = JSON.stringify(obj, undefined, 4);
+        document.getElementById('beautifyjson').value = pretty;
+    })
+</script>
+}

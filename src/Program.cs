@@ -2,12 +2,12 @@
 
 namespace RDP
 {
-    class Programv2
+    public class Programv2
     {
         static void Main(string[] args)
         {
         }
-        public void Connect(LogInfo log)
+        public static void Connect(LogInfo log)
         {
             RdpHandler.Rrocess(log);
         }
