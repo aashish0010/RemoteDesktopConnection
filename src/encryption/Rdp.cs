@@ -11,10 +11,12 @@ namespace RDP
             if (string.IsNullOrEmpty(info.Username) || string.IsNullOrEmpty(info.Password)) {
                 throw new ArgumentNullException("username and password can't be empty");
             }
+            RdpConstant constant = new RdpConstant();
             var pwstr = BitConverter.ToString(DataProtection.ProtectData(Encoding.Unicode.GetBytes(info.Password), "")).Replace("-", "");
             var rdpInfo = String.Format(File.ReadAllText(RdpConstant.templatePath), info.Ipaddress, info.Username, pwstr);
-            File.WriteAllText(RdpConstant.FilePath,rdpInfo);
-            _mstsc("mstsc "+ RdpConstant.FilePath);
+            constant.FilePath =info.Name +".rdp";
+            File.WriteAllText(constant.FilePath,rdpInfo);
+            _mstsc("mstsc "+ constant.FilePath);
         }
 
         private static void _mstsc(String cmd)

@@ -13,7 +13,7 @@
                     <li class="nav-item">
                         <a class="nav-link" id="custom-tabs-three-profile-tab" data-toggle="pill" href="#custom-tabs-three-profile" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">XML</a>
                     </li>
-                    
+
                 </ul>
             </div>
             <div class="card-body">
@@ -40,19 +40,19 @@
                         <div class="row">
                             <div class="col-5">
                                 <label>XML</label>
-                                <textarea rows="18" id="needtobeautify" class="form-control"></textarea>
+                                <textarea rows="18" id="needtobeautifyxml" class="form-control"></textarea>
                             </div>
                             <div class="col-1"></div>
 
                             <div class="col-5">
                                 <label>BEAUTIFY XML</label>
-                                <textarea rows="18" id="beautifyjson" class="form-control"></textarea>
+                                <textarea rows="18" id="beautifyxml" class="form-control"></textarea>
                             </div>
                         </div>
-                        <button class="btn btn-success mt-3" id="needtobeautifybutton">Beautify</button>
+                        <button class="btn btn-success mt-3" id="needtobeautifybuttonxml">Beautify</button>
                     </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -72,5 +72,21 @@
         var pretty = JSON.stringify(obj, undefined, 4);
         document.getElementById('beautifyjson').value = pretty;
     })
+
+        $("#needtobeautifybuttonxml").on("click",function(){
+            let ugly = $("#needtobeautifyxml").val();
+            document.getElementById('beautifyxml').value = formatXML(ugly);
+        })
+
+
+    function formatXML(xmlString) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+    const serializer = new XMLSerializer();
+    const formattedXML = serializer.serializeToString(xmlDoc);
+
+    return formattedXML;
+}
+
 </script>
 }

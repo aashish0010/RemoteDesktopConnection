@@ -82,8 +82,8 @@
 		}
 </style>
 <body>
-	
-	
+
+
 	<div class="row mt-5">
 		<div class="col-1"></div>
 		<div class="col-3">
@@ -96,7 +96,7 @@
 		<div class="col-1"></div>
 		<!-- insert another div here -->
 	</div>
-	
+
 		<table class="con">
 			<thead>
 				<tr>
@@ -160,9 +160,9 @@
 									<option value="Database">Database</option>
 									<option value="File">File</option>
 								</select>
-								
+
 						</div>
-						
+
 						<div class="col-4">
 							<div class="form-group">
 								<label for="exampleInputEmail1">IpAddress</label>
@@ -195,9 +195,9 @@
 								<input type="checkbox" class="form-control" id="isadserver" />
 							</div>
 						</div>
-						
+
 					</div>
-					
+
 				</div>
 				<div class="modal-footer justify-content-between">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -264,7 +264,7 @@
 				url: '@Url.Action("DeleteRdc","Home")',
 				data: { id: ipaddress },
 				success: function (result) {
-					location.reload();
+					//location.reload();
 				}
 			})
 		}

@@ -4,7 +4,7 @@
     {
         public static readonly string IpaddressPatten= @"^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$";
 
-        public static readonly string FilePath = "rdp.rdp";
+        public string FilePath { get; set; }
 
         public static readonly string templatePath= "E:\\Personal\\RemoteDesktopConnection\\src\\encryption/TemplateRDP.txt";
     }

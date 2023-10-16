@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.Data;
+using Microsoft.Extensions.Hosting;
 
 namespace RemoteDesktopApplication.Controllers
 {
@@ -11,7 +12,7 @@ namespace RemoteDesktopApplication.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 
-		public HomeController(ApplicationDbContext dbContext)
+        public HomeController(ApplicationDbContext dbContext)
         {
             _context = dbContext;
         }
@@ -20,8 +21,8 @@ namespace RemoteDesktopApplication.Controllers
 		{
             List<Servermanager> servermanagerRequests = new List<Servermanager>();
 			servermanagerRequests = _context.servermanager.OrderByDescending(x => x.ServerName).ToList();
-			return View(servermanagerRequests);
-		}
+            return View(servermanagerRequests);
+        }
 		[HttpPost]
 		public JsonResult AddServer(ServermanagerRequest request)
 		{
@@ -48,9 +49,10 @@ namespace RemoteDesktopApplication.Controllers
 			var server= _context.servermanager.Where(x => x.Id == guid).FirstOrDefault();
 			Programv2.Connect(new LogInfo()
 			{
-				Ipaddress= server.ServerIpAddress,
-				Username =server.ServerUsername,
-				Password=server.ServerPassword,
+				Name = server.ServerName + server.ServerHost,
+				Ipaddress = server.ServerIpAddress,
+				Username = server.ServerUsername,
+				Password = server.ServerPassword,
 			});
 
 			return Json("");
@@ -106,7 +108,7 @@ namespace RemoteDesktopApplication.Controllers
 			IWebElement passwordField = driver.FindElement(By.Name("Password"));
 			IWebElement accesstokenField = driver.FindElement(By.Name("AccessCode"));
 			IWebElement loginButton = driver.FindElement(By.ClassName("cus_btn"));
-			WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));		
+			WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 			usernameField.SendKeys(username);
 			passwordField.SendKeys(password);
 			accesstokenField.SendKeys(accesstoken);
@@ -126,7 +128,7 @@ namespace RemoteDesktopApplication.Controllers
 		}
 
 		[HttpPost]
-		public JsonResult ClearSesssion(string id)
+        public JsonResult ClearSesssion(string id)
 		{
 			try
 			{
@@ -176,7 +178,7 @@ namespace RemoteDesktopApplication.Controllers
 				accesstokenField1.SendKeys(accesstoken);
 				((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", loginButton1);
 			}
-			catch(Exception) 
+			catch(Exception)
 			{
 				Connect(id);
 			}
