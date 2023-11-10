@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RDP
 {
-    class RdpHandler
+    public class RdpHandler
     {
         public static void Rrocess(LogInfo info) {
             if (string.IsNullOrEmpty(info.Username) || string.IsNullOrEmpty(info.Password)) {
@@ -14,14 +14,10 @@ namespace RDP
             RdpConstant constant = new RdpConstant();
             var pwstr = BitConverter.ToString(DataProtection.ProtectData(Encoding.Unicode.GetBytes(info.Password), "")).Replace("-", "");
             var rdpInfo = String.Format(File.ReadAllText(RdpConstant.templatePath), info.Ipaddress, info.Username, pwstr);
-            constant.FilePath =info.Name +".rdp";
+            constant.FilePath ="RemoteDesktopConnection.rdp";
             File.WriteAllText(constant.FilePath,rdpInfo);
             FileInfo file = new FileInfo(constant.FilePath);
             _mstsc("mstsc "+ constant.FilePath);
-            //if (file.Exists)
-            //{
-            //    file.Delete();
-            //}
         }
 
         private static void _mstsc(String cmd)

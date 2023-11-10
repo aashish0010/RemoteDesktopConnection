@@ -9,7 +9,7 @@
 	body {
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 300;
-		line-height: 1.42em;
+		line-height: 1em;
 		color: #A7A1AE;
 	}
 
@@ -38,10 +38,10 @@
 	}
 
 		.con td, .con th {
-			padding-bottom: 2%;
-			padding-top: 2%;
+			padding-bottom: 1%;
+			padding-top: 1%;
 			padding-left: 2%;
-			width: 10px
+
 		}
 
 		/* Background-color of the odd rows */
@@ -87,14 +87,13 @@
 	<div class="row mt-5">
 		<div class="col-1"></div>
 		<div class="col-3">
-			<button class="btn btn-success" data-toggle="modal" data-target="#modal-lg">Create</button>
+			<button class="btn btn-success" id="Create" data-toggle="modal" data-target="#modal-lg">Create</button>
 		</div>
 		<div class="col-4"></div>
 		<div class="form-group col-3 ml-3">
 			<input id="myInput" type="text" class="form-control" placeholder="Search..">
 		</div>
 		<div class="col-1"></div>
-		<!-- insert another div here -->
 	</div>
 
 		<table class="con">
@@ -118,6 +117,18 @@
 					<td><button type="button" class="btn btn-primary btn-sm" onclick="ServerConnect('@items.Id')">
 							<i class="fas fa-wifi"></i>
 					</button>
+
+
+						<button type="button" class="btn btn-secondary btn-sm" onclick="ServerEdit('@items.Id')">
+							<i class="fas fa-edit"></i>
+						</button>
+
+						<button type="button" data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-info btn-sm" onclick="ServerDetail('@items.Id')">
+							<i class="fas fa-info"></i>
+						</button>
+
+
+
 						<button type="button" class="btn btn-danger btn-sm" onclick="Delete('@items.Id')">
 							<i class="fas fa-trash-alt"></i>
 						</button>
@@ -127,18 +138,85 @@
 			</tbody>
 		</table>
 
+
+
+
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Server Detail</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row" id="details">
+						<div class="col-4">
+							<label>ServerName</label>
+							<p id="serverNamedetail"></p>
+						</div>
+						<div class="col-4">
+							<label>ServerType</label>
+							<p id="serverTypedetail"></p>
+
+
+						</div>
+						<div class="col-4">
+							<label>ServerHost</label>
+							<p id="serverHostdetail"></p>
+
+						</div>
+						<div class="col-4">
+							<label>ServerIpAddress</label>
+							<p id="serverIpAddressdetail"></p>
+						</div>
+						<div class="col-4">
+							<label>ServerUsername</label>
+							<p id="serverUsernamedetail"></p>
+
+
+						</div>
+						<div class="col-4">
+							<label>ServerPassword</label>
+							<p id="serverPassworddetail"></p>
+						</div>
+
+						<div class="col-4">
+							<label>ServerDescription</label>
+							<p id="serverDescriptiondetail"></p>
+						</div>
+
+						<div class="col-4">
+							<label>IsAdServer</label>
+							<p id="isAdServerdetail"></p>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
 	<div class="modal fade" id="modal-lg" style="display: none;" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Large Modal</h4>
+					<h4 class="modal-title">Server Create</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
 				</div>
-				<div class="modal-body">
+				<form id="serverform">
+					<div class="modal-body">
 					<div class ="row">
-						<div class="col-4">
+							<input type="hidden" class="form-control" id="serverId">
+
+							<div class="col-4">
 							<div class="form-group">
 								<label for="exampleInputEmail1">Server Name</label>
 								<input type="text" class="form-control" id="serverName">
@@ -196,9 +274,13 @@
 							</div>
 						</div>
 
+
+
 					</div>
 
 				</div>
+
+				</form>
 				<div class="modal-footer justify-content-between">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<button id="SaveServer" type="button" class="btn btn-primary">Save</button>
@@ -219,19 +301,24 @@
 
 
 	$("#SaveServer").on("click",function()
-	{
-			let isadserver = $("#isadserver").val();
-			if(isadserver == "on")
+		{
+
+			var isChecked = $('#isadserver').prop('checked');
+			if (isChecked) {
+				isadserver = true;
+			}
+			else
 			{
-				isadserver=true;
+				isadserver = false;
 			}
 		let jsondata = {
-			ServerName: $("#serverName").val(),
-			ServerType: $("#serverType").val(),
-			ServerIpAddress: $("#serverIpAddress").val(),
-			ServerUsername: $("#serverUsername").val(),
-			ServerPassword: $("#serverPassword").val(),
-			ServerDescription: $("#serverDescription").val(),
+				Id: $("#serverId").val(),
+				ServerName: $("#serverName").val(),
+				ServerType: $("#serverType").val(),
+				ServerIpAddress: $("#serverIpAddress").val(),
+				ServerUsername: $("#serverUsername").val(),
+				ServerPassword: $("#serverPassword").val(),
+				ServerDescription: $("#serverDescription").val(),
 				IsAdServer: isadserver,
 				ServerHost: $("#serverHost").val()
 		};
@@ -246,6 +333,10 @@
 		})
 	})
 
+	$("#Create").on("click",function(){
+			$("#serverform").trigger("reset");
+	})
+
 	function ServerConnect(ipaddress)
 	{
 			$.ajax({
@@ -257,6 +348,60 @@
 				}
 			})
 	}
+	function ServerDetail(id)
+		{
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("RDCDetail","Home")',
+				data: { id: id },
+				success: function (result) {
+					$("#serverHostdetail").html(result.serverHost);
+					$("#serverTypedetail").html(result.serverType);
+					$("#serverNamedetail").html(result.serverName);
+					$("#serverIpAddressdetail").html(result.serverIpAddress);
+					$("#serverPassworddetail").html(result.serverPassword);
+					$("#serverDescriptiondetail").html(result.serverDescription);
+					if(result.serverUsername.includes("adserver")) {
+						$("#isAdServerdetail").html("true")
+					}
+					else
+					{
+						$("#isAdServerdetail").html("false")
+					}
+					result.serverUsername = result.serverUsername.replace("adserver\\", "");
+					result.serverUsername = result.serverUsername.replace("adserver//", "");
+					$("#serverUsernamedetail").html(result.serverUsername);
+
+				}
+			})
+			}
+
+		function ServerEdit(id) {
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("RDCDetail","Home")',
+				data: { id: id },
+				success: function (result) {
+					$("#Create").click();
+
+					$("#serverId").val(result.id);
+					$("#serverHost").val(result.serverHost);
+					$("#serverType").val(result.serverType);
+					$("#serverName").val(result.serverName);
+					$("#serverIpAddress").val(result.serverIpAddress);
+
+					$("#serverPassword").val(result.serverPassword);
+					$("#serverDescription").val(result.serverDescription);
+
+					if (result.serverUsername.includes("adserver")) {
+						$("#isadserver").click()
+					}
+					result.serverUsername = result.serverUsername.replace("adserver\\", "");
+					$("#serverUsername").val(result.serverUsername);
+
+				}
+			})
+		}
 
 		function Delete(ipaddress) {
 			$.ajax({

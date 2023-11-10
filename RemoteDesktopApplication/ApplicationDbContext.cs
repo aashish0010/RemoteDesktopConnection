@@ -19,9 +19,6 @@ namespace RemoteDesktopApplication
 			modelBuilder.Entity<Servermanager>().Property(x => x.ServerPassword).HasMaxLength(150);
 			modelBuilder.Entity<Servermanager>().Property(x => x.ServerDescription).HasMaxLength(500);
 			modelBuilder.Entity<Servermanager>().HasKey(x => x.Id);
-
-
-
 			modelBuilder.Entity<SiteManager>().Property(x => x.SiteName).HasMaxLength(256);
 			modelBuilder.Entity<SiteManager>().Property(x => x.SiteType).HasMaxLength(130);
 			modelBuilder.Entity<SiteManager>().Property(x => x.SiteRoot).HasMaxLength(150);
@@ -43,7 +40,20 @@ namespace RemoteDesktopApplication
 		public string ServerUsername { get; set; }
 		public string ServerPassword { get; set; }
 		public string ServerDescription { get; set; }
-		
+
+	}
+	public class SiteManageRequest
+	{
+		public string Id { get; set; }
+		public string SiteName { get; set; }
+		public string SiteLink { get; set; }
+		public string SiteRoot { get; set; }
+
+		public string SiteType { get; set; }
+
+		public string UserName { get; set; }
+		public string Password { get; set; }
+		public string AccessCode { get; set; }
 	}
 
 	public class SiteManager
@@ -58,10 +68,11 @@ namespace RemoteDesktopApplication
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		public string AccessCode { get; set; }
-		
+
 	}
 	public class ServermanagerRequest
 	{
+		public string id { get; set; }
 		[Required]
 		public string ServerName { get; set; }
 		[Required]

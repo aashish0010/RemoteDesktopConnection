@@ -5,18 +5,17 @@
 }
 
 <style>
-
 	body {
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 300;
-		line-height: 1.42em;
+		line-height: 1em;
 		color: #A7A1AE;
 	}
 
 	.con th h1 {
 		font-weight: bold;
 		font-size: 1em;
-		text-align: center;
+		text-align: left;
 		color: #185875;
 	}
 
@@ -31,7 +30,7 @@
 	.con {
 		text-align: left;
 		overflow: hidden;
-		width: 100%;
+		width: 98%;
 		margin: 0 auto;
 		display: table;
 		padding: 0 0 8em 0;
@@ -40,14 +39,15 @@
 		.con td, .con th {
 			padding-bottom: 1%;
 			padding-top: 1%;
-			padding-left: 1%;
-			width: 2px
+			padding-left: 2%;
 		}
 
+		/* Background-color of the odd rows */
 		.con tr:nth-child(odd) {
 			background-color: #323C50;
 		}
 
+		/* Background-color of the even rows */
 		.con tr:nth-child(even) {
 			background-color: #2C3446;
 		}
@@ -60,14 +60,31 @@
 			color: #FB667A;
 		}
 
+		.con tr:hover {
+			background-color: #464A52;
+			-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+			-moz-box-shadow: 0 6px 6px -6px #0E1119;
+			box-shadow: 0 6px 6px -6px #0E1119;
+		}
+
+		.con td:hover {
+			background-color: #FFF842;
+			color: #403E10;
+			font-weight: bold;
+			box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+			transform: translate3d(6px, -6px, 0);
+			transition-delay: 0s;
+			transition-duration: 0.4s;
+			transition-property: all;
+			transition-timing-function: line;
+		}
+
 </style>
 <body>
-
-
 	<div class="row mt-5">
 		<div class="col-1"></div>
 		<div class="col-3">
-			<button class="btn btn-success" data-toggle="modal" data-target="#modal-lg">Create</button>
+			<button class="btn btn-success" id="Create" data-toggle="modal" data-target="#modal-lg">Create</button>
 		</div>
 		<div class="col-4"></div>
 		<div class="form-group col-3 ml-3">
@@ -95,31 +112,39 @@
 					<td>@items.SiteType</td>
 					<td>@items.SiteLink</td>
 					<td>
-						<button type="button" class="btn btn-primary btn-sm" onclick="SiteConnect('@items.Id')">
+						<button type="button" class="btn btn-primary btn-sm" onclick="SiteConnect(`{@items.Id}`)">
 							<i class="fas fa-wifi"></i>
 							</button>
-						<button type="button" class="btn btn-info btn-sm" onclick="SiteDelete('@items.Id')">
+						<button type="button" class="btn btn-info btn-sm" onclick="ClearSesssion(`{@items.Id}`)">
 							<i class="fas fa-window-restore"></i>
 						</button>
-						<button type="button" class="btn btn-danger btn-sm" onclick="SiteDelete('@items.Id')">
+						<button type="button" class="btn btn-secondary btn-sm" onclick="SiteEdit('@items.Id')">
+							<i class="fas fa-edit"></i>
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="SiteDelete(`{@items.Id}`)">
 							<i class="fas fa-trash-alt"></i>
 						</button>
-						
+
 					</td>
 				</tr>
 			}
 		</tbody>
 	</table>
 
+
+
+
 	<div class="modal fade" id="modal-lg" style="display: none;" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Large Modal</h4>
+					<h4 class="modal-title">Site Create</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
 				</div>
+				<form id="siteform">
+					<input type="hidden" class="form-control" id="siteid">
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-4">
@@ -172,19 +197,18 @@
 							</div>
 						</div>
 
-						
+
 
 					</div>
 
 				</div>
+				</form>
 				<div class="modal-footer justify-content-between">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<button id="SaveSite" type="button" class="btn btn-primary">Save</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 
@@ -195,6 +219,7 @@
 	<script>
 		$("#SaveSite").on("click", function () {
 			let jsondata = {
+				Id: $("#siteid").val(),
 				SiteName: $("#siteName").val(),
 				SiteLink: $("#siteLink").val(),
 				SiteRoot: $("#siteRoot").val(),
@@ -214,6 +239,43 @@
 			})
 		})
 
+		$("#Create").on("click", function () {
+			$("#siteform").trigger("reset");
+		})
+
+
+		function SiteEdit(id) {
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("SiteDetail","Home")',
+				data: { id: id },
+				success: function (result) {
+					$("#Create").click();
+					$("#siteid").val(result.id);
+					$("#siteName").val(result.siteName);
+					$("#siteLink").val(result.siteLink);
+					$("#siteRoot").val(result.siteRoot);
+					$("#siteType").val(result.siteType);
+					$("#userName").val(result.userName);
+					$("#password").val(result.password);
+					$("#accessCode").val(result.accessCode);
+
+				}
+			})
+		}
+
+
+		function SiteDelete(id){
+			$.ajax({
+				method: "POST",
+				url: '@Url.Action("DeleteSite","Home")',
+				data: { id: id },
+				success: function (result) {
+					location.reload();
+				}
+			})
+		}
+
 		function SiteConnect(guidid) {
 			$.ajax({
 				method: "POST",
@@ -225,7 +287,7 @@
 			})
 		}
 
-		function SiteDelete(ipaddress) {
+		function ClearSesssion(ipaddress) {
 			$.ajax({
 				method: "POST",
 				url: '@Url.Action("ClearSesssion","Home")',

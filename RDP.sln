@@ -5,7 +5,9 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rdp", "src\Rdp.csproj", "{AA125BD3-E38C-4A31-A709-D4A952253505}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktopApplication", "RemoteDesktopApplication\RemoteDesktopApplication.csproj", "{9DE3ED30-154C-4070-A164-F73CF497608C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteDesktopApplication", "RemoteDesktopApplication\RemoteDesktopApplication.csproj", "{9DE3ED30-154C-4070-A164-F73CF497608C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoStart", "AutoStart\AutoStart.csproj", "{60D5E8E9-A782-4DB3-AD66-E77783F9FB85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9DE3ED30-154C-4070-A164-F73CF497608C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DE3ED30-154C-4070-A164-F73CF497608C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DE3ED30-154C-4070-A164-F73CF497608C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D5E8E9-A782-4DB3-AD66-E77783F9FB85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D5E8E9-A782-4DB3-AD66-E77783F9FB85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D5E8E9-A782-4DB3-AD66-E77783F9FB85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D5E8E9-A782-4DB3-AD66-E77783F9FB85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RDP;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using RDP;
 using System.Data;
-using Microsoft.Extensions.Hosting;
 
 namespace RemoteDesktopApplication.Controllers
 {
@@ -12,41 +11,60 @@ namespace RemoteDesktopApplication.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 
-        public HomeController(ApplicationDbContext dbContext)
-        {
-            _context = dbContext;
-        }
+		public HomeController(ApplicationDbContext dbContext)
+		{
+			_context = dbContext;
+		}
 
 		public IActionResult Index()
 		{
-            List<Servermanager> servermanagerRequests = new List<Servermanager>();
+			List<Servermanager> servermanagerRequests = new List<Servermanager>();
 			servermanagerRequests = _context.servermanager.OrderByDescending(x => x.ServerName).ToList();
-            return View(servermanagerRequests);
-        }
+			return View(servermanagerRequests);
+		}
 		[HttpPost]
 		public JsonResult AddServer(ServermanagerRequest request)
 		{
-			//if(request.IsAdServer ==true)
-			//	request.ServerUsername = "adserver\\" + request.ServerUsername;
+			request.ServerUsername = request.ServerUsername.Replace("adserver\\", "");
+			if (request.IsAdServer == true)
+				request.ServerUsername = "adserver\\" + request.ServerUsername;
 
-			_context.servermanager.Add(new Servermanager()
+
+			if (!string.IsNullOrWhiteSpace(request.id))
 			{
-				ServerDescription = request.ServerDescription,
-				ServerName = request.ServerName,
-				ServerIpAddress = request.ServerIpAddress.Replace("\n", ""),
-				ServerType = request.ServerType,
-				ServerPassword = request.ServerPassword.Replace("\n", ""),
-				ServerUsername = request.ServerUsername.Replace("\n", ""),
-				ServerHost = request.ServerHost
-			});
-			_context.SaveChanges();
+				Guid guid = Guid.Parse(request.id);
+				Servermanager servermanager = _context.servermanager.Find(guid);
+				servermanager.ServerHost = request.ServerHost;
+				servermanager.ServerIpAddress = request.ServerIpAddress;
+				servermanager.ServerPassword = request.ServerPassword;
+				servermanager.ServerName = request.ServerName;
+				servermanager.ServerDescription = request.ServerDescription;
+				servermanager.ServerType = request.ServerType;
+				servermanager.ServerUsername = request.ServerUsername;
+				_context.SaveChanges();
+			}
+			else
+			{
+				_context.servermanager.Add(new Servermanager()
+				{
+					ServerDescription = request.ServerDescription,
+					ServerName = request.ServerName,
+					ServerIpAddress = request.ServerIpAddress.Replace("\n", ""),
+					ServerType = request.ServerType,
+					ServerPassword = request.ServerPassword.Replace("\n", ""),
+					ServerUsername = request.ServerUsername.Replace("\n", ""),
+					ServerHost = request.ServerHost
+				});
+				_context.SaveChanges();
+			}
+
 			return Json("");
 		}
 		[HttpPost]
 		public JsonResult ConnectRdc(string id)
 		{
 			Guid guid = new Guid(id);
-			var server= _context.servermanager.Where(x => x.Id == guid).FirstOrDefault();
+			var server = _context.servermanager.Where(x => x.Id == guid).FirstOrDefault();
 			Programv2.Connect(new LogInfo()
 			{
 				Name = server.ServerName + server.ServerHost,
@@ -67,28 +85,54 @@ namespace RemoteDesktopApplication.Controllers
 			return Json("");
 		}
 
+		[HttpPost]
+		public JsonResult RDCDetail(string id)
+		{
+			Guid guid = new Guid(id);
+			Servermanager details = _context.servermanager.Where(x => x.Id == guid).FirstOrDefault();
+			//details.ServerUsername = details.ServerUsername.Replace("adserver\\", "");
+			return Json(details);
+		}
+
 		[HttpGet]
 		public ActionResult SiteManager()
 		{
 			List<SiteManager> siteManagers = new List<SiteManager>();
-			var  sites= _context.siteManagers.OrderByDescending(x => x.SiteName).ToList();
+			var sites = _context.siteManagers.OrderByDescending(x => x.SiteName).ToList();
 			return View(sites);
 		}
 
 		[HttpPost]
-		public JsonResult AddSite(SiteManager request)
+		public JsonResult AddSite(SiteManageRequest request)
 		{
-			_context.siteManagers.Add(new SiteManager()
+			if (!string.IsNullOrEmpty(request.Id))
 			{
-				SiteName = request.SiteName,
-				SiteLink = request.SiteLink,
-				SiteRoot = request.SiteRoot,
-				SiteType = request.SiteType,
-				UserName = request.UserName,
-				Password = request.Password,
-				AccessCode = request.AccessCode
-			});
-			_context.SaveChanges();
+				Guid guid = new Guid(request.Id);
+				var data = _context.siteManagers.Find(guid);
+				data.SiteLink = request.SiteLink;
+				data.AccessCode = request.AccessCode;
+				data.SiteRoot = request.SiteRoot;
+				data.SiteName = request.SiteName;
+				data.SiteType = request.SiteType;
+				data.UserName = request.UserName;
+				data.Password = request.Password;
+				_context.SaveChanges();
+			}
+			else
+			{
+				_context.siteManagers.Add(new SiteManager()
+				{
+					SiteName = request.SiteName,
+					SiteLink = request.SiteLink,
+					SiteRoot = request.SiteRoot,
+					SiteType = request.SiteType,
+					UserName = request.UserName,
+					Password = request.Password,
+					AccessCode = request.AccessCode
+				});
+				_context.SaveChanges();
+			}
+
 			return Json("");
 		}
 
@@ -101,7 +145,7 @@ namespace RemoteDesktopApplication.Controllers
 			string loginUrl = data.SiteLink;
 			driver.Navigate().GoToUrl(loginUrl);
 
-			string username =data.UserName;
+			string username = data.UserName;
 			string password = data.Password;
 			string accesstoken = data.AccessCode;
 			IWebElement usernameField = driver.FindElement(By.Name("UserName"));
@@ -128,7 +172,15 @@ namespace RemoteDesktopApplication.Controllers
 		}
 
 		[HttpPost]
-        public JsonResult ClearSesssion(string id)
+		public JsonResult SiteDetail(string id)
+		{
+			Guid guid = new Guid(id);
+			SiteManager server = _context.siteManagers.Where(x => x.Id == guid).FirstOrDefault();
+			return Json(server);
+		}
+
+		[HttpPost]
+		public JsonResult ClearSesssion(string id)
 		{
 			try
 			{
@@ -178,12 +230,14 @@ namespace RemoteDesktopApplication.Controllers
 				accesstokenField1.SendKeys(accesstoken);
 				((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", loginButton1);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				Connect(id);
 			}
 			return Json("");
 		}
+
+
 
 		[HttpGet]
 		public ActionResult JsonXmlBeautify()
