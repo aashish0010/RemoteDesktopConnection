@@ -1,65 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.ServiceProcess;
-using System.Text;
+using System.Timers;
 using System.Threading.Tasks;
+using System.Security.Policy;
 
 namespace AutoStart
 {
 	public partial class Service1 : ServiceBase
 	{
+		private readonly System.Timers.Timer timer1 = new System.Timers.Timer();
+		private readonly string appPath = "C:\\Users\\INFI\\Desktop\\RemoteConnectionService\\RemoteDesktopApplication.dll";
+
 		public Service1()
 		{
-			StartASPNetCoreApplication();
 			InitializeComponent();
+		}
+		private void LogInfo(string message)
+		{
+			EventLog.WriteEntry("YourServiceName", message, EventLogEntryType.Information);
+		}
+
+		private void LogError(string message)
+		{
+			EventLog.WriteEntry("YourServiceName", message, EventLogEntryType.Error);
 		}
 
 		protected override void OnStart(string[] args)
 		{
-			StartASPNetCoreApplication();
-		}
-
-		protected override void OnStop()
-		{
-			StopASPNetCoreApplication();
-		}
-		private static bool IsPortInUse(int port)
-		{
-			IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-			IPEndPoint[] endPoints = ipProperties.GetActiveTcpListeners();
-			return endPoints.Any(endpoint => endpoint.Port == port);
-		}
-
-		private void StartASPNetCoreApplication()
-		{
-			string appPath = "C:\\Users\\INFI\\Desktop\\RemoteConnectionService\\RemoteDesktopApplication.dll";
-
-
-			int port = 5000;
-			bool portInUse;
-
-			do
+			try
 			{
-				portInUse = IsPortInUse(port);
+				LogInfo("Service starting...");
+				Task.Run(() => StartASPNetCoreApplication());
+				LogInfo("Service started.");
+			}
+			catch (Exception ex)
+			{
+				LogError($"Error during service startup: {ex.Message}");
+			}
+		}
 
-				if (portInUse)
-				{
-					port++;
-				}
-			} while (portInUse);
+		private async void StartASPNetCoreApplication()
+		{
+			int port = FindAvailablePort(5000);
 
 			if (System.IO.File.Exists(appPath))
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
 					FileName = "dotnet",
-					Arguments = $"\"{appPath}\" --urls {port}",
+					Arguments = $"\"{appPath}\" --urls http://localhost:{port}",
 					CreateNoWindow = true,
 					UseShellExecute = false,
 					RedirectStandardOutput = true,
@@ -85,10 +78,11 @@ namespace AutoStart
 						}
 					};
 
+					StorePinno($"http://localhost:{port}");
 					process.Start();
 					process.BeginOutputReadLine();
 					process.BeginErrorReadLine();
-					process.WaitForExit();
+					await Task.Run(() => process.WaitForExit());
 
 					if (process.ExitCode != 0)
 					{
@@ -96,7 +90,7 @@ namespace AutoStart
 					}
 					else
 					{
-						Console.WriteLine("ASP.NET Core application started successfully.");
+						Console.WriteLine($"ASP.NET Core application started successfully on port {port}.");
 					}
 				}
 			}
@@ -106,9 +100,35 @@ namespace AutoStart
 			}
 		}
 
+
+
+		private void StorePinno(string url)
+		{
+			string sql = $@"insert into PortHandler(Port) values ('{url}')";
+			DbHelper helper = new DbHelper();
+			helper.Execute(sql);
+		}
+
+		private int FindAvailablePort(int startPort)
+		{
+			int port = startPort;
+			while (IsPortInUse(port))
+			{
+				port++;
+			}
+			return port;
+		}
+
+		private static bool IsPortInUse(int port)
+		{
+			IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+			IPEndPoint[] endPoints = ipProperties.GetActiveTcpListeners();
+			return endPoints.Any(endpoint => endpoint.Port == port);
+		}
+
 		private void StopASPNetCoreApplication()
 		{
-
+			// Your stop logic here
 		}
 	}
 }
