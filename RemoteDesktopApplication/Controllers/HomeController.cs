@@ -1,19 +1,49 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Connector;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting.Internal;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using RDP;
 using System.Data;
+using System.Text;
 
 namespace RemoteDesktopApplication.Controllers
 {
+	public static class StaticHandler
+	{
+		public static void DeleteAllRdpFiles(string directoryPath)
+		{
+			try
+			{
+				// Get all files with the ".rdp" extension in the specified directory
+				string[] rdpFiles = Directory.GetFiles(directoryPath, "*.rdp");
+
+				// Delete each file
+				foreach (var filePath in rdpFiles)
+				{
+					File.Delete(filePath);
+				}
+
+				Console.WriteLine($"Deleted {rdpFiles.Length} .rdp files in {directoryPath}");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error deleting .rdp files: {ex.Message}");
+			}
+		}
+	}
 	public class HomeController : Controller
 	{
 		private readonly ApplicationDbContext _context;
+		private readonly IWebHostEnvironment _hostingEnvironment;
 
-		public HomeController(ApplicationDbContext dbContext)
+
+		public HomeController(ApplicationDbContext dbContext, IWebHostEnvironment hostingEnvironment)
 		{
 			_context = dbContext;
+			_hostingEnvironment = hostingEnvironment;
+
 		}
 
 		public IActionResult Index()
@@ -60,12 +90,17 @@ namespace RemoteDesktopApplication.Controllers
 
 			return Json("");
 		}
-		[HttpPost]
-		public JsonResult ConnectRdc(string id)
+		[HttpGet]
+		public IActionResult ConnectRdc(string id)
 		{
 			Guid guid = new Guid(id);
 			var server = _context.servermanager.Where(x => x.Id == guid).FirstOrDefault();
-			Programv2.Connect(new LogInfo()
+			ConnectHandler connect = new ConnectHandler();
+
+			string rootfile = Path.Combine(_hostingEnvironment.ContentRootPath, "FileManager");
+			StaticHandler.DeleteAllRdpFiles(rootfile);
+			StaticHandler.DeleteAllRdpFiles("C:\\Users\\pudas\\Downloads");
+			var fileName =  connect.ConnectionManger(new LogInfoV2()
 			{
 				Name = server.ServerName + server.ServerHost,
 				Ipaddress = server.ServerIpAddress,
@@ -73,7 +108,18 @@ namespace RemoteDesktopApplication.Controllers
 				Password = server.ServerPassword,
 			});
 
-			return Json("");
+			string filePath = Path.Combine(rootfile, fileName);
+			if (System.IO.File.Exists(filePath))
+			{
+				byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+				string fileContent = Encoding.UTF8.GetString(fileBytes);
+
+				Response.Headers["Content-Disposition"] = $"attachment; filename={fileName}";
+				Response.ContentType = "application/x-rdp";
+				return File(fileBytes, "application/octet-stream", fileName);
+			}
+			return NotFound();
+
 		}
 		[HttpPost]
 		public JsonResult DeleteRdc(string id)
@@ -236,14 +282,14 @@ namespace RemoteDesktopApplication.Controllers
 			}
 			return Json("");
 		}
-
-
-
 		[HttpGet]
 		public ActionResult JsonXmlBeautify()
 		{
 			return View();
 		}
+
+
+		
 
 	}
 }

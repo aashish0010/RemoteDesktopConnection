@@ -114,9 +114,11 @@
 						<td>@items.ServerHost</td>
 						<td>@items.ServerType</td>
 						<td>@items.ServerIpAddress</td>
-					<td><button type="button" class="btn btn-primary btn-sm" onclick="ServerConnect('@items.Id')">
+					<td>
+						<a href="@Url.Action("ConnectRdc", "Home",new{id = @items.Id})" target="_blank"
+							class="btn btn-primary btn-sm">
 							<i class="fas fa-wifi"></i>
-					</button>
+					</a>
 
 
 						<button type="button" class="btn btn-secondary btn-sm" onclick="ServerEdit('@items.Id')">
@@ -290,6 +292,7 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+	<a href="@Url.Action("ConnectRdc", "Home")" target="_blank">Open RDC File</a>
 
 
 
@@ -344,7 +347,9 @@
 				url: '@Url.Action("ConnectRdc","Home")',
 				data:{id: ipaddress},
 				success: function (result) {
-					location.reload();
+					
+					
+					
 				}
 			})
 	}

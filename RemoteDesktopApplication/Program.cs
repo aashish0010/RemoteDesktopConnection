@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Quartz;
+using Quartz.Impl;
 using RemoteDesktopApplication;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllersWithViews();
 
